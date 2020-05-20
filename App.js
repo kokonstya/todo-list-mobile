@@ -11,39 +11,27 @@ const data = {
     todoLists: [
         {
             id: 1, title: 'todoList 1',
-            todos: [{id: 1, title: 'todo 1-1'}, {id: 2, title: 'todo 1-2'}, {id: 3, title: 'todo 1-3'}]
+            todos: [{id: 1, title: 'todo 1-1', important: false, done: false},
+                {id: 2, title: 'todo 1-2', important: false, done: true},
+                {id: 3, title: 'todo 1-3', important: false, done: false}]
         },
         {
             id: 2, title: 'todoList 2',
-            todos: [{id: 1, title: 'todo 2-1'}, {id: 2, title: 'todo 2-2'}, {id: 3, title: 'todo 2-3'}]
+            todos: [{id: 1, title: 'todo 2-1', important: false, done: false},
+                {id: 2, title: 'todo 2-2', important: false, done: true},
+                {id: 3, title: 'todo 2-3', important: false, done: false}]
         },
         {
             id: 3, title: 'todoList 3',
-            todos: [{id: 1, title: 'todo 3-1'}, {id: 2, title: 'todo 3-2'}, {id: 3, title: 'todo 3-3'}]
+            todos: [{id: 1, title: 'todo 3-1', important: false, done: false},
+                {id: 2, title: 'todo 3-2', important: false, done: true},
+                {id: 3, title: 'todo 3-3', important: false, done: false}]
         },
         {
             id: 4, title: 'todoList 4',
-            todos: [{id: 1, title: 'todo 4-1'}, {id: 2, title: 'todo 4-2'}, {id: 3, title: 'todo 4-3'}]
-        },
-        {
-            id: 5, title: 'todoList 5',
-            todos: [{id: 1, title: 'todo 5-1'}, {id: 2, title: 'todo 5-2'}, {id: 3, title: 'todo 5-3'}]
-        },
-        {
-            id: 6, title: 'todoList 6',
-            todos: [{id: 1, title: 'todo 6-1'}, {id: 2, title: 'todo 6-2'}, {id: 3, title: 'todo 6-3'}]
-        },
-        {
-            id: 7, title: 'todoList 7',
-            todos: [{id: 1, title: 'todo 7-1'}, {id: 2, title: 'todo 7-2'}, {id: 3, title: 'todo 7-3'}]
-        },
-        {
-            id: 8, title: 'todoList 8',
-            todos: [{id: 1, title: 'todo 8-1'}, {id: 2, title: 'todo 8-2'}, {id: 3, title: 'todo 8-3'}]
-        },
-        {
-            id: 9, title: 'todoList 9',
-            todos: [{id: 1, title: 'todo 9-1'}, {id: 2, title: 'todo 9-2'}, {id: 3, title: 'todo 9-3'}]
+            todos: [{id: 1, title: 'todo 4-1', important: false, done: false},
+                {id: 2, title: 'todo 4-2', important: false, done: false},
+                {id: 3, title: 'todo 4-3', important: false, done: false}]
         }]
 }
 
@@ -107,7 +95,9 @@ export default function App() {
         const newRoster = {
             ...oldRoster, todos: [...oldRoster.todos, {
                 id: getId(oldRoster.todos),
-                title
+                title,
+                important: false,
+                done: false
             }]
         }
         setState(prevState => [
@@ -148,18 +138,38 @@ export default function App() {
 
     }
 
+    const toggleProperty = (property, id) => {
+        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
+        const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
+        const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
+        const oldRoster = state[currentTodoRosterIndex];
+        const newTodo = {...oldTodo, [property]: !oldTodo[property]}
+        const newRosterTodos = [
+            ...oldRoster.todos.slice(0, currentTodoIndex),
+            newTodo,
+            ...oldRoster.todos.slice(currentTodoIndex + 1)
+        ]
+        console.log(newRosterTodos)
+
+        const newRoster = {...oldRoster, todos: newRosterTodos}
+        setState(prevState => [
+            ...prevState.slice(0, currentTodoRosterIndex),
+            newRoster,
+            ...prevState.slice(currentTodoRosterIndex + 1)
+        ])
+    }
+
     let todos
     if (!currentTodoRoster) {
         todos = <Text>Выберите список дел</Text>;
     } else {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
-        todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo} deleteTodo={deleteTodo}/>)
+        todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo} toggleProperty={toggleProperty} deleteTodo={deleteTodo}/>)
     }
     const [checkbox, setCheckbox] = useState(false)
     return (
         <View style={styles.container}>
             <ScrollView style={styles.todoLists}>
-                <CheckBox value={checkbox} onChange={()=>setCheckbox((prevState) => !prevState)}/>
                 {state.map((todoList) => <TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
                                                          todoRoster={todoList}
                                                          onPress={() => setCurrentTodoRoster(todoList.id)}/>)}
@@ -182,16 +192,17 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     todoLists: {
-        height: '45%',
+        height: '40%',
         width: '100%',
         borderStyle: 'solid',
         borderWidth: 3,
         borderRadius: 3,
-        borderColor: 'gray'
+        borderColor: 'gray',
+        marginBottom: 10
     },
     todoItems: {
         width: '100%',
-        height: 300,
+        height: '40%',
         borderStyle: 'solid',
         borderWidth: 3,
         borderRadius: 3,

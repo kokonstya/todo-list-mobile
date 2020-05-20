@@ -13,7 +13,7 @@ const CustomButton = ({ children, onPress, color = 'transparent' }) => {
 
 const styles = StyleSheet.create({
     button: {
-        paddingHorizontal: 20,
+        paddingHorizontal: 15,
         paddingVertical: 10,
         flexDirection: 'row',
         alignItems: 'center',
