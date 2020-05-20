@@ -4,7 +4,7 @@ import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
 
-const TodoItem = ({todo, deleteTodo, toggleProperty}) => {
+const TodoItem = ({todo, deleteTodo, openEdit, toggleProperty}) => {
     let importantStyle;
     if (todo.important) {
         importantStyle = {
@@ -26,7 +26,7 @@ const TodoItem = ({todo, deleteTodo, toggleProperty}) => {
                     <Text style={{...styles.title, ...importantStyle}}>{todo.title} - {todo.id}</Text>
                 </View>
                 <View style={styles.buttons}>
-                    <CustomButton>
+                    <CustomButton onPress={() => openEdit(todo)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
                     </CustomButton>
                     <CustomButton onPress={() => deleteTodo(todo.id)}>

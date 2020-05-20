@@ -7,6 +7,7 @@ import TodoRosterItem from "./src/components/TodoRosterItem";
 import AddForm from "./src/components/AddForm";
 import {FontAwesome} from "@expo/vector-icons";
 import AddModal from "./src/components/AddModal";
+import EditModal from "./src/components/EditModal";
 
 
 const data = {
@@ -158,32 +159,68 @@ export default function App() {
             ...prevState.slice(currentTodoRosterIndex + 1)
         ])
     }
-
+    const updateTodo = (id, title, important) => {
+        console.log('success')
+        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
+        const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
+        const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
+        const oldRoster = state[currentTodoRosterIndex];
+        const newTodo = {...oldTodo, title, important}
+        const newRosterTodos = [
+            ...oldRoster.todos.slice(0, currentTodoIndex),
+            newTodo,
+            ...oldRoster.todos.slice(currentTodoIndex + 1)
+        ]
+        const newRoster = {...oldRoster, todos: newRosterTodos}
+        setState(prevState => [
+            ...prevState.slice(0, currentTodoRosterIndex),
+            newRoster,
+            ...prevState.slice(currentTodoRosterIndex + 1)
+        ])
+    }
+    const openEdit = (todo) => {
+        setEditModal({visible: true, func: updateTodo, value: todo})
+    }
     let todos
     if (!currentTodoRoster) {
         todos = <Text>Выберите список дел</Text>;
     } else {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
-        todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo} toggleProperty={toggleProperty} deleteTodo={deleteTodo}/>)
+        todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo}
+                                                                            toggleProperty={toggleProperty}
+                                                                            deleteTodo={deleteTodo}
+                                                                            openEdit={openEdit}/>)
     }
-    const [addModal, setAddModal] = useState({visible: false, func: function () {}})
+    const [addModal, setAddModal] = useState({
+        visible: false, value: '', func: function () {
+        }
+    })
+    const [editModal, setEditModal] = useState({
+        visible: false, value: {}, func: function () {
+        }
+    })
+
+
     return (
         <View style={styles.container}>
-            <AddModal visible={addModal.visible} onSave={addModal.func} onCancel={()=>setAddModal({...addModal, visible: false})}/>
+            <AddModal visible={addModal.visible} onSave={addModal.func}
+                      onCancel={() => setAddModal({...addModal, visible: false})}/>
+            <EditModal visible={editModal.visible} onSave={editModal.func} value={editModal.value}
+                       onCancel={() => setEditModal({...editModal, visible: false})}/>
             <ScrollView style={styles.todoLists}>
                 {state.map((todoList) => <TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
                                                          todoRoster={todoList}
                                                          onPress={() => setCurrentTodoRoster(todoList.id)}/>)}
-                <CustomButton onPress={()=>setAddModal({visible: true, func: addTodoRoster})}>
+                <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster})}>
                     <FontAwesome name="plus" size={24} color="green"/>
                 </CustomButton>
             </ScrollView>
             <ScrollView style={styles.todoItems}>
                 {todos}
                 {currentTodoRoster ?
-                <CustomButton onPress={()=>setAddModal({visible: true, func: addTodo})}>
-                    <FontAwesome name="plus" size={24} color="green"/>
-                </CustomButton> : null}
+                    <CustomButton onPress={() => setAddModal({visible: true, func: addTodo})}>
+                        <FontAwesome name="plus" size={24} color="green"/>
+                    </CustomButton> : null}
             </ScrollView>
         </View>
     );

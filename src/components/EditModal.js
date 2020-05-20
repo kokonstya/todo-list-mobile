@@ -1,10 +1,16 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { View, StyleSheet, TextInput, Button, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
+import {CheckBox} from 'react-native-elements'
 
-export const EditModal = ({ visible, onCancel, value, onSave }) => {
-    const [title, setTitle] = useState(value)
-
+const EditModal = ({ visible, onCancel, value, onSave }) => {
+    console.log(value.title)
+    const [title, setTitle] = useState('')
+    const [important, setImportant] = useState(false)
+    useEffect(()=> {
+        setTitle(value.title)
+        setImportant(value.important)
+    }, [])
     const saveHandler = () => {
         if (title.trim().length < 3) {
             Alert.alert(
@@ -14,12 +20,14 @@ export const EditModal = ({ visible, onCancel, value, onSave }) => {
                 } символов.`
             )
         } else {
-            onSave(title)
+            onSave(value.id, title, important)
+            onCancel()
+            setTitle('')
         }
     }
 
     return (
-        <Modal visible={visible} animationType='fade' transparent={false} onDismiss={onCancel}>
+        <Modal visible={visible} animationType='fade' transparent={false}>
             <View style={styles.wrap}>
                 <TextInput
                     value={title}
@@ -30,6 +38,9 @@ export const EditModal = ({ visible, onCancel, value, onSave }) => {
                     autoCorrect={false}
                     maxLength={64}
                 />
+                <CheckBox checked={important} size={30} checkedColor={'green'}
+                          containerStyle={{margin: 0, padding: 0}}
+                          onPress={() => setImportant(!important)} />
                 <View style={styles.buttons}>
                     <CustomButton onPress={onCancel}>Отменить</CustomButton>
                     <CustomButton onPress={saveHandler}>Сохранить</CustomButton>
@@ -57,3 +68,5 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     }
 })
+
+export default EditModal;
