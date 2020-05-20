@@ -4,7 +4,6 @@ import {StyleSheet, Text, View, ScrollView, Alert, CheckBox} from 'react-native'
 import CustomButton from "./src/components/ui/CustomButton";
 import TodoItem from "./src/components/TodoItem";
 import TodoRosterItem from "./src/components/TodoRosterItem";
-import AddForm from "./src/components/AddForm";
 import {FontAwesome} from "@expo/vector-icons";
 import AddModal from "./src/components/AddModal";
 import EditModal from "./src/components/EditModal";
@@ -140,7 +139,19 @@ export default function App() {
         )
 
     }
-
+    const updateTodoRoster = (id, title) => {
+        const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
+        const oldRoster = state[oldRosterIndex];
+        const newRoster = {
+            ...oldRoster,
+                title,
+            }
+        setState(prevState => [
+            ...prevState.slice(0, oldRosterIndex),
+            newRoster,
+            ...prevState.slice(oldRosterIndex + 1)
+        ])
+    }
     const toggleProperty = (property, id) => {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
         const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
@@ -178,8 +189,11 @@ export default function App() {
             ...prevState.slice(currentTodoRosterIndex + 1)
         ])
     }
-    const openEdit = (todo) => {
+    const openTodoEdit = (todo) => {
         setEditModal({visible: true, func: updateTodo, value: todo})
+    }
+    const openTodoRosterEdit = (todoRoster) => {
+        setEditModal({visible: true, func: updateTodoRoster, value: todoRoster})
     }
     let todos
     if (!currentTodoRoster) {
@@ -189,7 +203,7 @@ export default function App() {
         todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo}
                                                                             toggleProperty={toggleProperty}
                                                                             deleteTodo={deleteTodo}
-                                                                            openEdit={openEdit}/>)
+                                                                            openEdit={openTodoEdit}/>)
     }
     const [addModal, setAddModal] = useState({
         visible: false, value: '', func: function () {
@@ -209,7 +223,7 @@ export default function App() {
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
             <ScrollView style={styles.todoLists}>
                 {state.map((todoList) => <TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
-                                                         todoRoster={todoList}
+                                                         todoRoster={todoList} openEdit={openTodoRosterEdit}
                                                          onPress={() => setCurrentTodoRoster(todoList.id)}/>)}
                 <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster})}>
                     <FontAwesome name="plus" size={24} color="green"/>
@@ -235,13 +249,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     todoLists: {
-        height: '40%',
+        height: 250,
         width: '100%',
         borderStyle: 'solid',
         borderWidth: 3,
         borderRadius: 3,
         borderColor: 'gray',
-        marginBottom: 10
+        marginBottom: 10,
+        padding: 5
     },
     todoItems: {
         width: '100%',
@@ -249,7 +264,9 @@ const styles = StyleSheet.create({
         borderStyle: 'solid',
         borderWidth: 3,
         borderRadius: 3,
-        borderColor: 'gray'
+        borderColor: 'gray',
+        padding: 5
+
     },
     text: {
         fontSize: 20

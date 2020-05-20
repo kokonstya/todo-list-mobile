@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import { View, StyleSheet, TextInput, Button, Modal, Alert } from 'react-native'
+import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
 
@@ -10,7 +10,7 @@ const EditModal = ({ visible, onCancel, value, onSave }) => {
     useEffect(()=> {
         setTitle(value.title)
         setImportant(value.important)
-    }, [])
+    }, [value])
     const saveHandler = () => {
         if (title.trim().length < 3) {
             Alert.alert(
@@ -38,9 +38,15 @@ const EditModal = ({ visible, onCancel, value, onSave }) => {
                     autoCorrect={false}
                     maxLength={64}
                 />
-                <CheckBox checked={important} size={30} checkedColor={'green'}
-                          containerStyle={{margin: 0, padding: 0}}
-                          onPress={() => setImportant(!important)} />
+
+                {value.todos ? null : <>
+                    <Text style={styles.importantText}>Срочно?</Text>
+                    <CheckBox checked={important} size={40} checkedColor={'green'}
+                              containerStyle={{margin: 0, padding: 0}}
+                              onPress={() => setImportant(!important)} />
+                  </>
+                }
+
                 <View style={styles.buttons}>
                     <CustomButton onPress={onCancel}>Отменить</CustomButton>
                     <CustomButton onPress={saveHandler}>Сохранить</CustomButton>
@@ -59,13 +65,18 @@ const styles = StyleSheet.create({
     input: {
         padding: 10,
         borderBottomWidth: 2,
-        width: '80%'
+        width: '80%',
+        fontSize: 20
     },
     buttons: {
         width: '100%',
         marginTop: 10,
         flexDirection: 'row',
         justifyContent: 'space-around'
+    },
+    importantText: {
+        margin: 10,
+        fontSize: 20
     }
 })
 

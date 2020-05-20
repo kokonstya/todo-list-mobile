@@ -3,14 +3,14 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 
-const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openModal}) => {
+const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit}) => {
     return (
         <TouchableWithoutFeedback onPress={onPress}>
 
             <View style={styles.todoRoster}>
                 <Text style={styles.title}>{todoRoster.title} - {todoRoster.id}</Text>
                 <View style={styles.buttons}>
-                    <CustomButton color={'#eaeaea'} onPress={()=>openModal()}>
+                    <CustomButton color={'#eaeaea'} onPress={()=>openEdit(todoRoster)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
                     </CustomButton>
                     <CustomButton color={'#eaeaea'} onPress={() => deleteTodoRoster(todoRoster.id)}>
