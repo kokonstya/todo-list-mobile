@@ -18,7 +18,8 @@ const getDate = (timeInMs) => {
     return `${day}.${month}.${year} ${hours}:${minute}`
 };
 
-const TodoItem = ({todo, deleteTodo, openEdit, toggleProperty}) => {
+const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
+
     let importantStyle;
     if (todo.important) {
         importantStyle = {

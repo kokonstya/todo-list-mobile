@@ -4,13 +4,11 @@ import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 
 const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit, style}) => {
-
-    console.log(style)
     return (
         <TouchableWithoutFeedback onPress={onPress}>
 
             <View style={{...styles.todoRoster, ...styles[style]}}>
-                <Text style={{...styles.title, ...styles[`title_${style}`]}}>{todoRoster.title}</Text>
+                <Text style={{...styles.title, ...styles[`title${style}`]}}>{todoRoster.title}</Text>
                 <View style={styles.buttons}>
                     <CustomButton onPress={()=>openEdit(todoRoster)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
@@ -41,6 +39,9 @@ const styles = StyleSheet.create({
         width: '65%',
         fontSize: 20,
     },
+    title_current_default: {
+        fontWeight: 'bold'
+    },
     title_current_active: {
         fontWeight: 'bold'
     },
@@ -52,19 +53,21 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    current_active: {
+    _current_active: {
         borderStyle: 'solid',
         borderWidth: 4,
         backgroundColor: '#33FA33',
-
     },
-    current_done: {
+    _current_done: {
         borderStyle: 'solid',
         borderWidth: 4,
         backgroundColor: '#aaa',
-
     },
-
+    _current_default: {
+        borderStyle: 'solid',
+        borderWidth: 4,
+        backgroundColor: '#fff',
+    },
     _active: {
         backgroundColor: '#33FA33'
     },

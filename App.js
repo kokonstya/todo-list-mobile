@@ -1,25 +1,14 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, ScrollView, Alert, CheckBox} from 'react-native';
+import {StyleSheet, Text, View, Alert} from 'react-native';
 
-import CustomButton from "./src/components/ui/CustomButton";
 import TodoItem from "./src/components/TodoItem";
-import TodoRosterItem from "./src/components/TodoRosterItem";
-import {FontAwesome} from "@expo/vector-icons";
 import AddModal from "./src/components/AddModal";
 import EditModal from "./src/components/EditModal";
+import TodoRosterList from "./src/components/TodoRosterList";
+import TodoList from "./src/components/TodoList";
+import ButtonGroup from "./src/components/ButtonGroup";
 
-const filter = (items, filter) => {
-    switch (filter) {
-        case 'all':
-            return items;
-        case 'active':
-            return items.filter((list) => list.todos.some((todo) => todo.done === false));
-        case 'done':
-            return items.filter((list) => list.todos.every((todo) => todo.done === true));
-        default:
-            return items;
-    }
-};
+import {getId} from "./src/components/utils";
 
 const data = {
     todoLists: [
@@ -52,58 +41,38 @@ const data = {
 export default function App() {
     const [currentTodoRoster, setCurrentTodoRoster] = useState(null);
     const [state, setState] = useState(data.todoLists)
-
-
-    const getId = (arr) => {
-        let newId;
-        newId = Math.floor(Math.random() * 100);
-        const search = arr.some((item) => item.id === newId);
-        if (arr.length >= 95) {
-            return 0;
+    const updateTodoRoster = (id, title) => {
+        const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
+        const oldRoster = state[oldRosterIndex];
+        const newRoster = {
+            ...oldRoster,
+            title,
         }
-        if (search) {
-            return getId(arr);
-        } else {
-            return newId;
-        }
-    };
-
-    const addTodoRoster = (title) => {
         setState(prevState => [
-            ...prevState,
-            {
-                id: getId(state).toString(),
-                title,
-                todos: []
-            }
+            ...prevState.slice(0, oldRosterIndex),
+            newRoster,
+            ...prevState.slice(oldRosterIndex + 1)
         ])
     }
-    const deleteTodoRoster = (id) => {
-        const list = state.find(item => item.id === id)
-        Alert.alert(
-            'Удаление элемента',
-            `Вы уверены, что хотите удалить "${list.title} ${list.id}"?`,
-            [
-                {
-                    text: 'Отмена',
-                    style: 'cancel'
-                },
-                {
-                    text: 'Удалить',
-                    style: 'destructive',
-                    onPress: () => {
-                        if (currentTodoRoster === id) {
-                            setCurrentTodoRoster(null)
-                        }
-                        setState(prev => prev.filter(list => list.id !== id))
-                    }
-                }
-            ],
-            {cancelable: true}
-        )
-
+    const updateTodo = (id, title, important) => {
+        console.log('success')
+        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
+        const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
+        const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
+        const oldRoster = state[currentTodoRosterIndex];
+        const newTodo = {...oldTodo, title, important}
+        const newRosterTodos = [
+            ...oldRoster.todos.slice(0, currentTodoIndex),
+            newTodo,
+            ...oldRoster.todos.slice(currentTodoIndex + 1)
+        ]
+        const newRoster = {...oldRoster, todos: newRosterTodos}
+        setState(prevState => [
+            ...prevState.slice(0, currentTodoRosterIndex),
+            newRoster,
+            ...prevState.slice(currentTodoRosterIndex + 1)
+        ])
     }
-
     const addTodo = (title) => {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
         const oldRoster = state[currentTodoRosterIndex];
@@ -127,7 +96,7 @@ export default function App() {
         const todo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
         Alert.alert(
             'Удаление элемента',
-            `Вы уверены, что хотите удалить "${todo.title} ${todo.id}"?`,
+            `Вы уверены, что хотите удалить "${todo.title}"?`,
             [
                 {
                     text: 'Отмена',
@@ -153,56 +122,7 @@ export default function App() {
         )
 
     }
-    const updateTodoRoster = (id, title) => {
-        const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
-        const oldRoster = state[oldRosterIndex];
-        const newRoster = {
-            ...oldRoster,
-            title,
-        }
-        setState(prevState => [
-            ...prevState.slice(0, oldRosterIndex),
-            newRoster,
-            ...prevState.slice(oldRosterIndex + 1)
-        ])
-    }
-    const toggleProperty = (property, id) => {
-        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
-        const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
-        const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
-        const oldRoster = state[currentTodoRosterIndex];
-        const newTodo = {...oldTodo, [property]: !oldTodo[property]}
-        const newRosterTodos = [
-            ...oldRoster.todos.slice(0, currentTodoIndex),
-            newTodo,
-            ...oldRoster.todos.slice(currentTodoIndex + 1)
-        ]
-        const newRoster = {...oldRoster, todos: newRosterTodos}
-        setState(prevState => [
-            ...prevState.slice(0, currentTodoRosterIndex),
-            newRoster,
-            ...prevState.slice(currentTodoRosterIndex + 1)
-        ])
-    }
-    const updateTodo = (id, title, important) => {
-        console.log('success')
-        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
-        const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
-        const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
-        const oldRoster = state[currentTodoRosterIndex];
-        const newTodo = {...oldTodo, title, important}
-        const newRosterTodos = [
-            ...oldRoster.todos.slice(0, currentTodoIndex),
-            newTodo,
-            ...oldRoster.todos.slice(currentTodoIndex + 1)
-        ]
-        const newRoster = {...oldRoster, todos: newRosterTodos}
-        setState(prevState => [
-            ...prevState.slice(0, currentTodoRosterIndex),
-            newRoster,
-            ...prevState.slice(currentTodoRosterIndex + 1)
-        ])
-    }
+
     const openTodoEdit = (todo) => {
         setEditModal({visible: true, func: updateTodo, value: todo})
     }
@@ -214,16 +134,7 @@ export default function App() {
     if (currentTodoRoster) {
         currentTodoRosterTitle = state.find(item => item.id === currentTodoRoster).title;
     }
-    let todos
-    if (!currentTodoRoster) {
-        todos = <Text>Выберите список дел</Text>;
-    } else {
-        const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
-        todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo}
-                                                                            toggleProperty={toggleProperty}
-                                                                            deleteTodo={deleteTodo}
-                                                                            openEdit={openTodoEdit}/>)
-    }
+
     const [addModal, setAddModal] = useState({
         visible: false, value: '', func: function () {
         }
@@ -235,7 +146,7 @@ export default function App() {
     const [filterValue, setFilterValue] = useState('all')
     let filterAll, filterActive, filterDone;
     if (filterValue === 'all') {
-            filterAll = '#DDDD00'
+        filterAll = '#DDDD00'
     } else if (filterValue === 'active') {
         filterActive = '#DDDD00'
     } else if (filterValue === 'done') {
@@ -244,54 +155,22 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <AddModal visible={addModal.visible} onSave={addModal.func} value={addModal.value}
+            <AddModal state={state} visible={addModal.visible} onSave={addModal.func} value={addModal.value}
                       currentTodoRosterTitle={currentTodoRosterTitle}
                       onCancel={() => setAddModal({...addModal, visible: false})}/>
-            <EditModal visible={editModal.visible} onSave={editModal.func} value={editModal.value}
+            <EditModal state={state} visible={editModal.visible} onSave={editModal.func} value={editModal.value}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
-            <View style={styles.buttonGroup}>
-
-                <CustomButton color={filterAll} onPress={() => setFilterValue('all')}>
-                    Все
-                </CustomButton>
-                <CustomButton color={filterActive} onPress={() => setFilterValue('active')}>
-                    Неисполненные
-                </CustomButton>
-                <CustomButton color={filterDone} onPress={() => setFilterValue('done')}>
-                    Исполненные
-                </CustomButton>
-            </View>
-            <ScrollView style={styles.todoLists}>
-
-                {filter(state, filterValue).sort(function (a, b) {
-                    return a.title.localeCompare(b.title);
-                }).map((todoList) => {
-                    let style = '';
-                    if (todoList.id === currentTodoRoster) {
-                        style = 'current';
-                    }
-                    if (todoList.todos.every((item) => item.done === true) && todoList.todos.length !== 0) {
-                        style += '_done';
-                    } else if (todoList.todos.some((item) => item.done === false)) {
-                        style += '_active';
-                    }
-
-                    return (<TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
-                                    todoRoster={todoList} openEdit={openTodoRosterEdit}
-                                            style={style}
-                                    onPress={() => setCurrentTodoRoster(todoList.id)}/>)
-                })}
-                <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster, value: 'todoRoster'})}>
-                    <FontAwesome name="plus" size={24} color="green"/>
-                </CustomButton>
-            </ScrollView>
-            <ScrollView style={styles.todoItems}>
-                {todos}
-                {currentTodoRoster ?
-                    <CustomButton onPress={() => setAddModal({visible: true, func: addTodo, value: 'todo'})}>
-                        <FontAwesome name="plus" size={24} color="green"/>
-                    </CustomButton> : null}
-            </ScrollView>
+            <ButtonGroup filterActive={filterActive} filterAll={filterAll} filterDone={filterDone}
+                         setFilterValue={setFilterValue}/>
+            <TodoRosterList currentTodoRoster={currentTodoRoster}
+                            filterValue={filterValue}
+                            setState={setState} state={state}
+                            setCurrentTodoRoster={setCurrentTodoRoster}
+                            setAddModal={setAddModal}
+                            openTodoRosterEdit={openTodoRosterEdit}/>
+            <TodoList currentTodoRoster={currentTodoRoster}
+                      state={state} openTodoEdit={openTodoEdit} deleteTodo={deleteTodo}
+                      setState={setState} setAddModal={setAddModal} addTodo={addTodo}/>
         </View>
     );
 }
@@ -305,32 +184,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    todoLists: {
-        height: 250,
-        width: '100%',
-        borderStyle: 'solid',
-        borderWidth: 3,
-        borderRadius: 3,
-        borderColor: 'gray',
-        marginBottom: 10,
-        padding: 5
-    },
-    todoItems: {
-        width: '100%',
-        height: '40%',
-        borderStyle: 'solid',
-        borderWidth: 3,
-        borderRadius: 3,
-        borderColor: 'gray',
-        padding: 5
-
-    },
     text: {
         fontSize: 20
     },
-    buttonGroup: {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        alignItems: 'center'
-    }
+
 });

@@ -3,8 +3,7 @@ import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
 
-const EditModal = ({ visible, onCancel, value, onSave }) => {
-    console.log(value.title)
+const EditModal = ({ visible, onCancel, value, onSave, state }) => {
     const [title, setTitle] = useState('')
     const [important, setImportant] = useState(false)
     useEffect(()=> {
@@ -12,12 +11,10 @@ const EditModal = ({ visible, onCancel, value, onSave }) => {
         setImportant(value.important)
     }, [value])
     const saveHandler = () => {
-        if (title.trim().length < 3) {
+        if (title.trim().length < 1) {
             Alert.alert(
                 'Ошибка!',
-                `Минимальная длинна названия 3 символа. Сейчас ${
-                    title.trim().length
-                } символов.`
+                `Минимальная длина названия 1 символ`
             )
         } else {
             onSave(value.id, title, important)
@@ -36,7 +33,7 @@ const EditModal = ({ visible, onCancel, value, onSave }) => {
                     placeholder='Введите название'
                     autoCapitalize='none'
                     autoCorrect={false}
-                    maxLength={64}
+                    maxLength={30}
                 />
 
                 {value.todos ? null : <>
