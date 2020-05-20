@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
 
+
 const AddModal = ({ visible, onCancel, onSave, value, currentTodoRosterTitle }) => {
     const [title, setTitle] = useState('')
     let text;
@@ -30,7 +31,7 @@ if (value === 'todoRoster') {
     return (
         <Modal visible={visible} animationType='slide' transparent={false}>
             <View style={styles.wrap}>
-                <Text>{text}</Text>
+                <Text style={styles.text}>{text}</Text>
                 <TextInput
                     value={title}
                     onChangeText={setTitle}
@@ -59,6 +60,9 @@ const styles = StyleSheet.create({
         padding: 10,
         borderBottomWidth: 2,
         width: '80%'
+    },
+    text: {
+        width: '70%'
     },
     buttons: {
         width: '100%',

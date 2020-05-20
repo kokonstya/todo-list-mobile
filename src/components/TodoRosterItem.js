@@ -3,17 +3,19 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 
-const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit}) => {
+const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit, style}) => {
+
+    console.log(style)
     return (
         <TouchableWithoutFeedback onPress={onPress}>
 
-            <View style={styles.todoRoster}>
-                <Text style={styles.title}>{todoRoster.title}</Text>
+            <View style={{...styles.todoRoster, ...styles[style]}}>
+                <Text style={{...styles.title, ...styles[`title_${style}`]}}>{todoRoster.title}</Text>
                 <View style={styles.buttons}>
-                    <CustomButton color={'#eaeaea'} onPress={()=>openEdit(todoRoster)}>
+                    <CustomButton onPress={()=>openEdit(todoRoster)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
                     </CustomButton>
-                    <CustomButton color={'#eaeaea'} onPress={() => deleteTodoRoster(todoRoster.id)}>
+                    <CustomButton onPress={() => deleteTodoRoster(todoRoster.id)}>
                         <FontAwesome name="remove" size={20} color="red"/>
                     </CustomButton>
 
@@ -36,13 +38,38 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     title: {
-        fontSize: 20
-
+        width: '65%',
+        fontSize: 20,
+    },
+    title_current_active: {
+        fontWeight: 'bold'
+    },
+    title_current_done: {
+        fontWeight: 'bold'
     },
     buttons: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    current_active: {
+        borderStyle: 'solid',
+        borderWidth: 4,
+        backgroundColor: '#33FA33',
+
+    },
+    current_done: {
+        borderStyle: 'solid',
+        borderWidth: 4,
+        backgroundColor: '#aaa',
+
+    },
+
+    _active: {
+        backgroundColor: '#33FA33'
+    },
+    _done: {
+        backgroundColor: '#aaa'
     }
 
 })

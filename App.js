@@ -8,6 +8,18 @@ import {FontAwesome} from "@expo/vector-icons";
 import AddModal from "./src/components/AddModal";
 import EditModal from "./src/components/EditModal";
 
+const filter = (items, filter) => {
+    switch (filter) {
+        case 'all':
+            return items;
+        case 'active':
+            return items.filter((list) => list.todos.some((todo) => todo.done === false));
+        case 'done':
+            return items.filter((list) => list.todos.every((todo) => todo.done === true));
+        default:
+            return items;
+    }
+};
 
 const data = {
     todoLists: [
@@ -146,8 +158,8 @@ export default function App() {
         const oldRoster = state[oldRosterIndex];
         const newRoster = {
             ...oldRoster,
-                title,
-            }
+            title,
+        }
         setState(prevState => [
             ...prevState.slice(0, oldRosterIndex),
             newRoster,
@@ -220,18 +232,46 @@ export default function App() {
         visible: false, value: {}, func: function () {
         }
     })
-
+    const [filterValue, setFilterValue] = useState('all')
 
     return (
         <View style={styles.container}>
-            <AddModal visible={addModal.visible} onSave={addModal.func} value={addModal.value} currentTodoRosterTitle={currentTodoRosterTitle}
+            <AddModal visible={addModal.visible} onSave={addModal.func} value={addModal.value}
+                      currentTodoRosterTitle={currentTodoRosterTitle}
                       onCancel={() => setAddModal({...addModal, visible: false})}/>
             <EditModal visible={editModal.visible} onSave={editModal.func} value={editModal.value}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
+            <View style={styles.buttonGroup}>
+                <CustomButton onPress={() => setFilterValue('all')}>
+                    Все
+                </CustomButton>
+                <CustomButton onPress={() => setFilterValue('active')}>
+                    Неисполненные
+                </CustomButton>
+                <CustomButton onPress={() => setFilterValue('done')}>
+                    Исполненные
+                </CustomButton>
+            </View>
             <ScrollView style={styles.todoLists}>
-                {state.map((todoList) => <TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
-                                                         todoRoster={todoList} openEdit={openTodoRosterEdit}
-                                                         onPress={() => setCurrentTodoRoster(todoList.id)}/>)}
+
+                {filter(state, filterValue).sort(function (a, b) {
+                    return a.title.localeCompare(b.title);
+                }).map((todoList) => {
+                    let style = '';
+                    if (todoList.id === currentTodoRoster) {
+                        style = 'current';
+                    }
+                    if (todoList.todos.every((item) => item.done === true) && todoList.todos.length !== 0) {
+                        style += '_done';
+                    } else if (todoList.todos.some((item) => item.done === false)) {
+                        style += '_active';
+                    }
+
+                    return (<TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
+                                    todoRoster={todoList} openEdit={openTodoRosterEdit}
+                                            style={style}
+                                    onPress={() => setCurrentTodoRoster(todoList.id)}/>)
+                })}
                 <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster, value: 'todoRoster'})}>
                     <FontAwesome name="plus" size={24} color="green"/>
                 </CustomButton>
@@ -249,6 +289,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
     container: {
+        paddingTop: 30,
         flex: 1,
         padding: 10,
         backgroundColor: '#eee',
@@ -277,5 +318,10 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 20
+    },
+    buttonGroup: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
     }
 });

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         borderStyle: 'solid',
         borderWidth: 1,
-        borderRadius: 10
+        borderRadius: 10,
     },
     content: {
         flexDirection: 'row',
@@ -74,6 +74,8 @@ const styles = StyleSheet.create({
     text: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
+        width: 200,
+        marginLeft: -15
     },
     title: {
         fontSize: 20
@@ -82,6 +84,7 @@ const styles = StyleSheet.create({
         fontSize: 12,
     },
     buttons: {
+        margin: 0,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
