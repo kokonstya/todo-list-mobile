@@ -1,10 +1,17 @@
 import React, { useState } from 'react'
-import { View, StyleSheet, TextInput, Modal, Alert } from 'react-native'
+import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
 
-const AddModal = ({ visible, onCancel, onSave }) => {
+const AddModal = ({ visible, onCancel, onSave, value, currentTodoRosterTitle }) => {
     const [title, setTitle] = useState('')
-
+    let text;
+if (value === 'todoRoster') {
+    text = 'Добавить новый список дел'
+} else if (value === 'todo') {
+    text = `Добавить новое дело в список ${currentTodoRosterTitle}`
+} else {
+    text = 'Добавить'
+}
     const saveHandler = () => {
         if (title.trim().length < 3) {
             Alert.alert(
@@ -23,6 +30,7 @@ const AddModal = ({ visible, onCancel, onSave }) => {
     return (
         <Modal visible={visible} animationType='slide' transparent={false}>
             <View style={styles.wrap}>
+                <Text>{text}</Text>
                 <TextInput
                     value={title}
                     onChangeText={setTitle}

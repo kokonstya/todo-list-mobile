@@ -8,7 +8,7 @@ const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit}) => {
         <TouchableWithoutFeedback onPress={onPress}>
 
             <View style={styles.todoRoster}>
-                <Text style={styles.title}>{todoRoster.title} - {todoRoster.id}</Text>
+                <Text style={styles.title}>{todoRoster.title}</Text>
                 <View style={styles.buttons}>
                     <CustomButton color={'#eaeaea'} onPress={()=>openEdit(todoRoster)}>
                         <FontAwesome name="edit" size={20} color="blue"/>

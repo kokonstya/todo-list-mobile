@@ -1,8 +1,22 @@
 import React, {useState} from 'react'
-import {View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
+import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
+
+const getDate = (timeInMs) => {
+    const date = new Date(timeInMs);
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    month = (month < 10) ? '0' + month : month;
+    let day = date.getDate();
+    day = (day < 10) ? '0' + day : day;
+    let hours = date.getHours();
+    hours = (hours < 10) ? '0' + hours : hours;
+    let minute = date.getMinutes();
+    minute = (minute < 10) ? '0' + minute : minute;
+    return `${day}.${month}.${year} ${hours}:${minute}`
+};
 
 const TodoItem = ({todo, deleteTodo, openEdit, toggleProperty}) => {
     let importantStyle;
@@ -20,10 +34,13 @@ const TodoItem = ({todo, deleteTodo, openEdit, toggleProperty}) => {
             <View style={styles.todo}>
                 <View style={styles.content}>
                     <CheckBox checked={todo.done} size={30} checkedColor={'green'}
-                              containerStyle={{margin: 0, padding: 0}}
+                              containerStyle={{margin: 0, padding: 0, justifyContent: 'center',}}
                               onPress={() => toggleProperty('done', todo.id)}
                     />
-                    <Text style={{...styles.title, ...importantStyle}}>{todo.title} - {todo.id}</Text>
+                    <View style={styles.text}>
+                    <Text style={{...styles.title, ...importantStyle}}>{todo.title}</Text>
+                    <Text style={styles.date}>{getDate(todo.date)}</Text>
+                    </View>
                 </View>
                 <View style={styles.buttons}>
                     <CustomButton onPress={() => openEdit(todo)}>
@@ -54,9 +71,15 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
     },
+    text: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+    },
     title: {
         fontSize: 20
-
+    },
+    date: {
+        fontSize: 12,
     },
     buttons: {
         flexDirection: 'row',

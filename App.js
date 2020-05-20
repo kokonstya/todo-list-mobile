@@ -13,33 +13,34 @@ const data = {
     todoLists: [
         {
             id: 1, title: 'todoList 1',
-            todos: [{id: 1, title: 'todo 1-1', important: false, done: false},
-                {id: 2, title: 'todo 1-2', important: false, done: true},
-                {id: 3, title: 'todo 1-3', important: false, done: false}]
+            todos: [{id: 1, title: 'todo 1-1', date: 1589989334590, important: false, done: false},
+                {id: 2, title: 'todo 1-2', date: 1589981334590, important: false, done: true},
+                {id: 3, title: 'todo 1-3', date: 1589983334590, important: false, done: false}]
         },
         {
             id: 2, title: 'todoList 2',
-            todos: [{id: 1, title: 'todo 2-1', important: false, done: false},
-                {id: 2, title: 'todo 2-2', important: false, done: true},
-                {id: 3, title: 'todo 2-3', important: false, done: false}]
+            todos: [{id: 1, title: 'todo 2-1', date: 1584929334590, important: false, done: false},
+                {id: 2, title: 'todo 2-2', date: 1585989334590, important: false, done: true},
+                {id: 3, title: 'todo 2-3', date: 1586989334590, important: false, done: false}]
         },
         {
             id: 3, title: 'todoList 3',
-            todos: [{id: 1, title: 'todo 3-1', important: false, done: false},
-                {id: 2, title: 'todo 3-2', important: false, done: true},
-                {id: 3, title: 'todo 3-3', important: false, done: false}]
+            todos: [{id: 1, title: 'todo 3-1', date: 1589489334590, important: false, done: false},
+                {id: 2, title: 'todo 3-2', date: 1589589334590, important: false, done: true},
+                {id: 3, title: 'todo 3-3', date: 1589689334590, important: false, done: false}]
         },
         {
             id: 4, title: 'todoList 4',
-            todos: [{id: 1, title: 'todo 4-1', important: false, done: false},
-                {id: 2, title: 'todo 4-2', important: false, done: false},
-                {id: 3, title: 'todo 4-3', important: false, done: false}]
+            todos: [{id: 1, title: 'todo 4-1', date: 1589089334590, important: false, done: false},
+                {id: 2, title: 'todo 4-2', date: 1589189334590, important: false, done: false},
+                {id: 3, title: 'todo 4-3', date: 1589289334590, important: false, done: false}]
         }]
 }
 
 export default function App() {
     const [currentTodoRoster, setCurrentTodoRoster] = useState(null);
     const [state, setState] = useState(data.todoLists)
+
 
     const getId = (arr) => {
         let newId;
@@ -99,7 +100,8 @@ export default function App() {
                 id: getId(oldRoster.todos),
                 title,
                 important: false,
-                done: false
+                done: false,
+                date: Date.now()
             }]
         }
         setState(prevState => [
@@ -192,8 +194,13 @@ export default function App() {
     const openTodoEdit = (todo) => {
         setEditModal({visible: true, func: updateTodo, value: todo})
     }
+
     const openTodoRosterEdit = (todoRoster) => {
         setEditModal({visible: true, func: updateTodoRoster, value: todoRoster})
+    }
+    let currentTodoRosterTitle;
+    if (currentTodoRoster) {
+        currentTodoRosterTitle = state.find(item => item.id === currentTodoRoster).title;
     }
     let todos
     if (!currentTodoRoster) {
@@ -217,7 +224,7 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <AddModal visible={addModal.visible} onSave={addModal.func}
+            <AddModal visible={addModal.visible} onSave={addModal.func} value={addModal.value} currentTodoRosterTitle={currentTodoRosterTitle}
                       onCancel={() => setAddModal({...addModal, visible: false})}/>
             <EditModal visible={editModal.visible} onSave={editModal.func} value={editModal.value}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
@@ -225,14 +232,14 @@ export default function App() {
                 {state.map((todoList) => <TodoRosterItem key={todoList.id} deleteTodoRoster={deleteTodoRoster}
                                                          todoRoster={todoList} openEdit={openTodoRosterEdit}
                                                          onPress={() => setCurrentTodoRoster(todoList.id)}/>)}
-                <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster})}>
+                <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster, value: 'todoRoster'})}>
                     <FontAwesome name="plus" size={24} color="green"/>
                 </CustomButton>
             </ScrollView>
             <ScrollView style={styles.todoItems}>
                 {todos}
                 {currentTodoRoster ?
-                    <CustomButton onPress={() => setAddModal({visible: true, func: addTodo})}>
+                    <CustomButton onPress={() => setAddModal({visible: true, func: addTodo, value: 'todo'})}>
                         <FontAwesome name="plus" size={24} color="green"/>
                     </CustomButton> : null}
             </ScrollView>
