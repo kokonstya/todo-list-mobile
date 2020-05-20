@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {View, Text, StyleSheet, TouchableOpacity, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
@@ -14,6 +14,7 @@ const TodoItem = ({todo, deleteTodo, toggleProperty}) => {
     } else {
         importantStyle = {}
     }
+
     return (
         <TouchableWithoutFeedback onLongPress={() => toggleProperty('important', todo.id)}>
             <View style={styles.todo}>
