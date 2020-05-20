@@ -233,6 +233,14 @@ export default function App() {
         }
     })
     const [filterValue, setFilterValue] = useState('all')
+    let filterAll, filterActive, filterDone;
+    if (filterValue === 'all') {
+            filterAll = '#DDDD00'
+    } else if (filterValue === 'active') {
+        filterActive = '#DDDD00'
+    } else if (filterValue === 'done') {
+        filterDone = '#DDDD00'
+    }
 
     return (
         <View style={styles.container}>
@@ -242,13 +250,14 @@ export default function App() {
             <EditModal visible={editModal.visible} onSave={editModal.func} value={editModal.value}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
             <View style={styles.buttonGroup}>
-                <CustomButton onPress={() => setFilterValue('all')}>
+
+                <CustomButton color={filterAll} onPress={() => setFilterValue('all')}>
                     Все
                 </CustomButton>
-                <CustomButton onPress={() => setFilterValue('active')}>
+                <CustomButton color={filterActive} onPress={() => setFilterValue('active')}>
                     Неисполненные
                 </CustomButton>
-                <CustomButton onPress={() => setFilterValue('done')}>
+                <CustomButton color={filterDone} onPress={() => setFilterValue('done')}>
                     Исполненные
                 </CustomButton>
             </View>
