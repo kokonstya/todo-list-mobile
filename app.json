@@ -1,11 +1,10 @@
 {
   "expo": {
-    "name": "first-react-native",
-    "slug": "first-react-native",
+    "name": "todo-list mobile",
+    "slug": "extended-todo-list-mobile-version",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",

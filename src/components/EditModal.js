@@ -8,8 +8,11 @@ const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterT
     const [important, setImportant] = useState(false)
 
     let currentTodoRosterIndex;
-    currentTodoRosterTitle ? currentTodoRosterIndex = state.findIndex((todoList) => todoList.title === currentTodoRosterTitle)
-    : currentTodoRosterIndex = 0
+    if (currentTodoRosterTitle) {
+        currentTodoRosterIndex = state.findIndex((todoList) => todoList.title === currentTodoRosterTitle)
+    } else {
+        currentTodoRosterIndex = 0
+    }
 
     useEffect(()=> {
         setTitle(value.title)
