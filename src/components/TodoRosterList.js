@@ -22,19 +22,7 @@ const filter = (items, filter) => {
 
 const TodoRosterList = ({ state, currentTodoRoster, filterValue, setState,
                             setCurrentTodoRoster, setAddModal, openTodoRosterEdit }) => {
-    const updateTodoRoster = (id, title) => {
-        const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
-        const oldRoster = state[oldRosterIndex];
-        const newRoster = {
-            ...oldRoster,
-            title,
-        }
-        setState(prevState => [
-            ...prevState.slice(0, oldRosterIndex),
-            newRoster,
-            ...prevState.slice(oldRosterIndex + 1)
-        ])
-    }
+
     const addTodoRoster = (title) => {
         setState(prevState => [
             ...prevState,

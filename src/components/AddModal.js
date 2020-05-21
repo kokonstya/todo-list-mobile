@@ -76,11 +76,10 @@ const AddModal = ({ state, visible, onCancel, onSave, value, currentTodoRosterTi
                     placeholder='Введите название'
                     autoCapitalize='none'
                     autoCorrect={false}
-                    maxLength={30}
                 />
                 <View style={styles.buttons}>
-                    <CustomButton onPress={()=>{onCancel();setTitle('')}} color={'red'}>Отменить</CustomButton>
-                    <CustomButton onPress={saveHandler} color={'green'}>Сохранить</CustomButton>
+                    <CustomButton onPress={()=>{onCancel();setTitle('')}} >Отменить</CustomButton>
+                    <CustomButton onPress={saveHandler} >Сохранить</CustomButton>
                 </View>
             </View>
         </Modal>
@@ -96,7 +95,8 @@ const styles = StyleSheet.create({
     input: {
         padding: 10,
         borderBottomWidth: 2,
-        width: '80%'
+        width: '80%',
+        fontSize: 20
     },
     text: {
         width: '70%'

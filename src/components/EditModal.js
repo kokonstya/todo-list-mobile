@@ -3,24 +3,65 @@ import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
 
-const EditModal = ({ visible, onCancel, value, onSave, state }) => {
+const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterTitle }) => {
     const [title, setTitle] = useState('')
     const [important, setImportant] = useState(false)
+    const currentTodoRosterIndex = state.findIndex((todoList) => todoList.title === currentTodoRosterTitle)
+
     useEffect(()=> {
         setTitle(value.title)
         setImportant(value.important)
     }, [value])
+
     const saveHandler = () => {
-        if (title.trim().length < 1) {
-            Alert.alert(
-                'Ошибка!',
-                `Минимальная длина названия 1 символ`
-            )
+        if (value === 'todoRoster') {
+            if (title.trim().length < 1) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Минимальная длина названия списка дел 1 символ.`
+                )
+            } else if (title.length >= 30) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Максимальная длина названия списка дел 30 символов. Сейчас ${
+                        title.length
+                    } символов.`
+                )
+            } else if (state.some((item) => item.title === title.trim())) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Список дел "${title}" уже существует!`
+                )
+            } else {
+                onSave(value.id, title, important)
+                onCancel()
+                setTitle('')
+            }
         } else {
-            onSave(value.id, title, important)
-            onCancel()
-            setTitle('')
+            if (title.trim().length < 1) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Минимальная длина названия дела 1 символ.`
+                )
+            } else if (title.length >= 30) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Максимальная длина названия дела 30 символов. Сейчас ${
+                        title.length
+                    } символов.`
+                )
+            } else if (state[currentTodoRosterIndex].todos.some((item) => item.title === title.trim())) {
+                Alert.alert(
+                    'Ошибка!',
+                    `Дело "${title}" уже существует в списке ${currentTodoRosterTitle}`
+                )
+            } else {
+                onSave(value.id, title, important)
+                onCancel()
+                setTitle('')
+            }
         }
+
     }
 
     return (
@@ -33,7 +74,6 @@ const EditModal = ({ visible, onCancel, value, onSave, state }) => {
                     placeholder='Введите название'
                     autoCapitalize='none'
                     autoCorrect={false}
-                    maxLength={30}
                 />
 
                 {value.todos ? null : <>

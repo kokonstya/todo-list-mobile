@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert} from 'react-native'
+import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {FontAwesome} from "@expo/vector-icons";
 import TodoItem from "./TodoItem";
@@ -24,7 +24,6 @@ const TodoList = ({ currentTodoRoster, state, openTodoEdit, deleteTodo, setAddMo
         ])
     }
     let todos;
-    console.log(state)
     if (!currentTodoRoster) {
         todos = <Text>Выберите список дел</Text>;
     } else {
@@ -47,6 +46,7 @@ const TodoList = ({ currentTodoRoster, state, openTodoEdit, deleteTodo, setAddMo
 
 const styles = StyleSheet.create({
     todoItems: {
+        paddingBottom: 15,
         width: '100%',
         height: '40%',
         borderStyle: 'solid',
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         borderColor: 'gray',
         padding: 5
-
     },
 })
 

@@ -6,7 +6,6 @@ import CustomButton from "./ui/CustomButton";
 const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit, style}) => {
     return (
         <TouchableWithoutFeedback onPress={onPress}>
-
             <View style={{...styles.todoRoster, ...styles[style]}}>
                 <Text style={{...styles.title, ...styles[`title${style}`]}}>{todoRoster.title}</Text>
                 <View style={styles.buttons}>
@@ -16,7 +15,6 @@ const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit, style}
                     <CustomButton onPress={() => deleteTodoRoster(todoRoster.id)}>
                         <FontAwesome name="remove" size={20} color="red"/>
                     </CustomButton>
-
                 </View>
             </View>
         </TouchableWithoutFeedback>

@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Alert} from 'react-native';
 
-import TodoItem from "./src/components/TodoItem";
 import AddModal from "./src/components/AddModal";
 import EditModal from "./src/components/EditModal";
 import TodoRosterList from "./src/components/TodoRosterList";
@@ -41,6 +40,7 @@ const data = {
 export default function App() {
     const [currentTodoRoster, setCurrentTodoRoster] = useState(null);
     const [state, setState] = useState(data.todoLists)
+
     const updateTodoRoster = (id, title) => {
         const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
         const oldRoster = state[oldRosterIndex];
@@ -55,7 +55,6 @@ export default function App() {
         ])
     }
     const updateTodo = (id, title, important) => {
-        console.log('success')
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
         const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
         const currentTodoIndex = state[currentTodoRosterIndex].todos.findIndex(item => item.id === oldTodo.id)
@@ -122,7 +121,6 @@ export default function App() {
         )
 
     }
-
     const openTodoEdit = (todo) => {
         setEditModal({visible: true, func: updateTodo, value: todo})
     }
@@ -159,6 +157,7 @@ export default function App() {
                       currentTodoRosterTitle={currentTodoRosterTitle}
                       onCancel={() => setAddModal({...addModal, visible: false})}/>
             <EditModal state={state} visible={editModal.visible} onSave={editModal.func} value={editModal.value}
+                       currentTodoRosterTitle={currentTodoRosterTitle}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
             <ButtonGroup filterActive={filterActive} filterAll={filterAll} filterDone={filterDone}
                          setFilterValue={setFilterValue}/>
@@ -187,5 +186,4 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 20
     },
-
 });

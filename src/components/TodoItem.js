@@ -3,20 +3,8 @@ import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
+import {getDate} from "./utils";
 
-const getDate = (timeInMs) => {
-    const date = new Date(timeInMs);
-    const year = date.getFullYear();
-    let month = date.getMonth() + 1;
-    month = (month < 10) ? '0' + month : month;
-    let day = date.getDate();
-    day = (day < 10) ? '0' + day : day;
-    let hours = date.getHours();
-    hours = (hours < 10) ? '0' + hours : hours;
-    let minute = date.getMinutes();
-    minute = (minute < 10) ? '0' + minute : minute;
-    return `${day}.${month}.${year} ${hours}:${minute}`
-};
 
 const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
 
@@ -39,8 +27,8 @@ const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
                               onPress={() => toggleProperty('done', todo.id)}
                     />
                     <View style={styles.text}>
-                    <Text style={{...styles.title, ...importantStyle}}>{todo.title}</Text>
-                    <Text style={styles.date}>{getDate(todo.date)}</Text>
+                        <Text style={{...styles.title, ...importantStyle}}>{todo.title}</Text>
+                        <Text style={styles.date}>{getDate(todo.date)}</Text>
                     </View>
                 </View>
                 <View style={styles.buttons}>
@@ -50,7 +38,6 @@ const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
                     <CustomButton onPress={() => deleteTodo(todo.id)}>
                         <FontAwesome name="remove" size={20} color="red"/>
                     </CustomButton>
-
                 </View>
             </View>
         </TouchableWithoutFeedback>
