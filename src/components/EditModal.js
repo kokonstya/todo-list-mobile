@@ -6,7 +6,10 @@ import {CheckBox} from 'react-native-elements'
 const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterTitle }) => {
     const [title, setTitle] = useState('')
     const [important, setImportant] = useState(false)
-    const currentTodoRosterIndex = state.findIndex((todoList) => todoList.title === currentTodoRosterTitle)
+
+    let currentTodoRosterIndex;
+    currentTodoRosterTitle ? currentTodoRosterIndex = state.findIndex((todoList) => todoList.title === currentTodoRosterTitle)
+    : currentTodoRosterIndex = 0
 
     useEffect(()=> {
         setTitle(value.title)
