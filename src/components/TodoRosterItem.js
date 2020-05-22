@@ -9,7 +9,7 @@ const TodoRosterItem = ({todoRoster, onPress, deleteTodoRoster, openEdit, style}
             <View style={{...styles.todoRoster, ...styles[style]}}>
                 <Text style={{...styles.title, ...styles[`title${style}`]}}>{todoRoster.title}</Text>
                 <View style={styles.buttons}>
-                    <CustomButton onPress={()=>openEdit(todoRoster)}>
+                    <CustomButton onPress={() => openEdit(todoRoster)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
                     </CustomButton>
                     <CustomButton onPress={() => deleteTodoRoster(todoRoster.id)}>

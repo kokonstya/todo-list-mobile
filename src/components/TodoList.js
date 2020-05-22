@@ -1,10 +1,10 @@
 import React from 'react'
-import {View, Text, StyleSheet, ScrollView, Alert} from 'react-native'
+import {Text, StyleSheet, ScrollView} from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {FontAwesome} from "@expo/vector-icons";
 import TodoItem from "./TodoItem";
 
-const TodoList = ({ currentTodoRoster, state, openTodoEdit, deleteTodo, setAddModal, addTodo, setState  }) => {
+const TodoList = ({currentTodoRoster, state, openTodoEditAdd, deleteTodo, openTodoEdit, setState}) => {
     const toggleProperty = (property, id) => {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
         const oldTodo = state[currentTodoRosterIndex].todos.find(item => item.id === id)
@@ -31,13 +31,14 @@ const TodoList = ({ currentTodoRoster, state, openTodoEdit, deleteTodo, setAddMo
         todos = state[currentTodoRosterIndex].todos.map((todo) => <TodoItem key={todo.id} todo={todo}
                                                                             toggleProperty={toggleProperty}
                                                                             deleteTodo={deleteTodo}
-                                                                            openEdit={openTodoEdit}/>)
+                                                                            openEditAdd={openTodoEditAdd}
+                                                                            openTodoEdit={openTodoEdit}/>)
     }
     return (
         <ScrollView style={styles.todoItems}>
             {todos}
             {currentTodoRoster ?
-                <CustomButton onPress={() => setAddModal({visible: true, func: addTodo, value: 'todo'})}>
+                <CustomButton onPress={openTodoEditAdd}>
                     <FontAwesome name="plus" size={24} color="green"/>
                 </CustomButton> : null}
         </ScrollView>

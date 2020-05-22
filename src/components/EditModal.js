@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react'
-import { View, StyleSheet, TextInput, Text, Modal, Alert } from 'react-native'
+import {View, StyleSheet, TextInput, Text, Modal, Alert} from 'react-native'
 import CustomButton from "./ui/CustomButton";
 import {CheckBox} from 'react-native-elements'
 
-const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterTitle }) => {
+const EditModal = ({state, visible, onCancel, value, onSave, currentTodoRosterTitle}) => {
     const [title, setTitle] = useState('')
     const [important, setImportant] = useState(false)
 
@@ -14,13 +14,24 @@ const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterT
         currentTodoRosterIndex = 0
     }
 
-    useEffect(()=> {
+    useEffect(() => {
         setTitle(value.title)
         setImportant(value.important)
     }, [value])
 
+    let text;
+    if (value === 'todoRoster') {
+        text = 'Добавить новый список дел'
+    } else if (value === 'todo') {
+        text = `Добавить новое дело в список ${currentTodoRosterTitle}`
+    } else if (value.todos) {
+        text = 'Изменить список дел'
+    } else {
+        text = 'Изменить дело'
+    }
+
     const saveHandler = () => {
-        if (value === 'todoRoster') {
+        if (value === 'todoRoster' || value.todos) {
             if (title.trim().length < 1) {
                 Alert.alert(
                     'Ошибка!',
@@ -39,9 +50,15 @@ const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterT
                     `Список дел "${title}" уже существует!`
                 )
             } else {
-                onSave(value.id, title, important)
-                onCancel()
-                setTitle('')
+                if (value === 'todoRoster') {
+                    onSave(title)
+                    onCancel()
+                    setTitle('')
+                } else {
+                    onSave(value.id, title)
+                    onCancel()
+                    setTitle('')
+                }
             }
         } else {
             if (title.trim().length < 1) {
@@ -62,17 +79,25 @@ const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterT
                     `Дело "${title}" уже существует в списке ${currentTodoRosterTitle}`
                 )
             } else {
-                onSave(value.id, title, important)
-                onCancel()
-                setTitle('')
+                if (value === 'todo') {
+                    onSave(title, important)
+                    onCancel()
+                    setTitle('')
+                    setImportant(false)
+                } else {
+                    onSave(value.id, title, important)
+                    onCancel()
+                    setTitle('')
+                }
             }
         }
 
     }
 
     return (
-        <Modal visible={visible} animationType='fade' transparent={false}>
+        <Modal visible={visible} animationType='slide' transparent={false}>
             <View style={styles.wrap}>
+                <Text style={styles.text}>{text}</Text>
                 <TextInput
                     value={title}
                     onChangeText={setTitle}
@@ -82,16 +107,19 @@ const EditModal = ({ state, visible, onCancel, value, onSave, currentTodoRosterT
                     autoCorrect={false}
                 />
 
-                {value.todos ? null : <>
+                {value.todos || value === 'todoRoster' ? null : <>
                     <Text style={styles.importantText}>Срочно?</Text>
                     <CheckBox checked={important} size={40} checkedColor={'green'}
                               containerStyle={{margin: 0, padding: 0}}
-                              onPress={() => setImportant(!important)} />
-                  </>
+                              onPress={() => setImportant(!important)}/>
+                </>
                 }
 
                 <View style={styles.buttons}>
-                    <CustomButton onPress={onCancel}>Отменить</CustomButton>
+                    <CustomButton onPress={() => {
+                        onCancel();
+                        setTitle('')
+                    }}>Отменить</CustomButton>
                     <CustomButton onPress={saveHandler}>Сохранить</CustomButton>
                 </View>
             </View>
@@ -120,6 +148,9 @@ const styles = StyleSheet.create({
     importantText: {
         margin: 10,
         fontSize: 20
+    },
+    text: {
+        fontSize: 15
     }
 })
 

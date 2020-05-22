@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {View, Text, StyleSheet, TouchableWithoutFeedback} from 'react-native'
 import {FontAwesome} from '@expo/vector-icons';
 import CustomButton from "./ui/CustomButton";
@@ -6,7 +6,7 @@ import {CheckBox} from 'react-native-elements'
 import {getDate} from "./utils";
 
 
-const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
+const TodoItem = ({toggleProperty, todo, deleteTodo, openTodoEdit}) => {
 
     let importantStyle;
     if (todo.important) {
@@ -32,7 +32,7 @@ const TodoItem = ({toggleProperty, todo, deleteTodo, openEdit}) => {
                     </View>
                 </View>
                 <View style={styles.buttons}>
-                    <CustomButton onPress={() => openEdit(todo)}>
+                    <CustomButton onPress={() => openTodoEdit(todo)}>
                         <FontAwesome name="edit" size={20} color="blue"/>
                     </CustomButton>
                     <CustomButton onPress={() => deleteTodo(todo.id)}>

@@ -2,7 +2,7 @@ import CustomButton from "./ui/CustomButton";
 import {StyleSheet, View} from "react-native";
 import React from "react";
 
-const ButtonGroup = ({ filterAll, filterActive, filterDone, setFilterValue }) => {
+const ButtonGroup = ({filterAll, filterActive, filterDone, setFilterValue}) => {
     return (
         <View style={styles.buttonGroup}>
             <CustomButton color={filterAll} onPress={() => setFilterValue('all')}>

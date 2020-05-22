@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, View, Alert} from 'react-native';
+import {StyleSheet, View, Alert} from 'react-native';
 
-import AddModal from "./src/components/AddModal";
 import EditModal from "./src/components/EditModal";
 import TodoRosterList from "./src/components/TodoRosterList";
 import TodoList from "./src/components/TodoList";
@@ -41,6 +40,16 @@ export default function App() {
     const [currentTodoRoster, setCurrentTodoRoster] = useState(null);
     const [state, setState] = useState(data.todoLists)
 
+    const addTodoRoster = (title) => {
+        setState(prevState => [
+            ...prevState,
+            {
+                id: getId(state).toString(),
+                title,
+                todos: []
+            }
+        ])
+    }
     const updateTodoRoster = (id, title) => {
         const oldRosterIndex = state.findIndex((todoList) => todoList.id === id)
         const oldRoster = state[oldRosterIndex];
@@ -72,14 +81,14 @@ export default function App() {
             ...prevState.slice(currentTodoRosterIndex + 1)
         ])
     }
-    const addTodo = (title) => {
+    const addTodo = (title, important) => {
         const currentTodoRosterIndex = state.findIndex((todoList) => todoList.id === currentTodoRoster)
         const oldRoster = state[currentTodoRosterIndex];
         const newRoster = {
             ...oldRoster, todos: [...oldRoster.todos, {
                 id: getId(oldRoster.todos),
                 title,
-                important: false,
+                important,
                 done: false,
                 date: Date.now()
             }]
@@ -128,17 +137,21 @@ export default function App() {
     const openTodoRosterEdit = (todoRoster) => {
         setEditModal({visible: true, func: updateTodoRoster, value: todoRoster})
     }
+    const openTodoEditAdd = (todo) => {
+        setEditModal({visible: true, func: addTodo, value: 'todo'})
+    }
+
+    const openTodoRosterEditAdd = (todoRoster) => {
+        setEditModal({visible: true, func: addTodoRoster, value: 'todoRoster'})
+    }
+
     let currentTodoRosterTitle;
     if (currentTodoRoster) {
         currentTodoRosterTitle = state.find(item => item.id === currentTodoRoster).title;
     }
 
-    const [addModal, setAddModal] = useState({
-        visible: false, value: '', func: function () {
-        }
-    })
     const [editModal, setEditModal] = useState({
-        visible: false, value: {}, func: function () {
+        visible: false, value: '', func: () => {
         }
     })
     const [filterValue, setFilterValue] = useState('all')
@@ -153,9 +166,6 @@ export default function App() {
 
     return (
         <View style={styles.container}>
-            <AddModal state={state} visible={addModal.visible} onSave={addModal.func} value={addModal.value}
-                      currentTodoRosterTitle={currentTodoRosterTitle}
-                      onCancel={() => setAddModal({...addModal, visible: false})}/>
             <EditModal state={state} visible={editModal.visible} onSave={editModal.func} value={editModal.value}
                        currentTodoRosterTitle={currentTodoRosterTitle}
                        onCancel={() => setEditModal({...editModal, visible: false})}/>
@@ -165,11 +175,11 @@ export default function App() {
                             filterValue={filterValue}
                             setState={setState} state={state}
                             setCurrentTodoRoster={setCurrentTodoRoster}
-                            setAddModal={setAddModal}
+                            openTodoRosterEditAdd={openTodoRosterEditAdd}
                             openTodoRosterEdit={openTodoRosterEdit}/>
             <TodoList currentTodoRoster={currentTodoRoster}
                       state={state} openTodoEdit={openTodoEdit} deleteTodo={deleteTodo}
-                      setState={setState} setAddModal={setAddModal} addTodo={addTodo}/>
+                      setState={setState} openTodoEditAdd={openTodoEditAdd} addTodo={addTodo}/>
         </View>
     );
 }

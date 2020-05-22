@@ -1,9 +1,8 @@
 import React from 'react'
-import {View, Text, StyleSheet, TouchableOpacity, ScrollView, Alert} from 'react-native'
+import {StyleSheet, ScrollView, Alert} from 'react-native'
 import TodoRosterItem from "./TodoRosterItem";
 import CustomButton from "./ui/CustomButton";
 import {FontAwesome} from "@expo/vector-icons";
-import {getId} from "./utils";
 
 const filter = (items, filter) => {
     switch (filter) {
@@ -19,20 +18,12 @@ const filter = (items, filter) => {
 };
 
 
+const TodoRosterList = ({
+                            state, currentTodoRoster, filterValue, setState,
+                            setCurrentTodoRoster, openTodoRosterEditAdd, openTodoRosterEdit
+                        }) => {
 
-const TodoRosterList = ({ state, currentTodoRoster, filterValue, setState,
-                            setCurrentTodoRoster, setAddModal, openTodoRosterEdit }) => {
 
-    const addTodoRoster = (title) => {
-        setState(prevState => [
-            ...prevState,
-            {
-                id: getId(state).toString(),
-                title,
-                todos: []
-            }
-        ])
-    }
     const deleteTodoRoster = (id) => {
         const list = state.find(item => item.id === id)
         Alert.alert(
@@ -81,7 +72,7 @@ const TodoRosterList = ({ state, currentTodoRoster, filterValue, setState,
                                         style={style}
                                         onPress={() => setCurrentTodoRoster(todoList.id)}/>)
             })}
-            <CustomButton onPress={() => setAddModal({visible: true, func: addTodoRoster, value: 'todoRoster'})}>
+            <CustomButton onPress={openTodoRosterEditAdd}>
                 <FontAwesome name="plus" size={24} color="green"/>
             </CustomButton>
         </ScrollView>
